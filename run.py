@@ -72,6 +72,26 @@ def get_next_id(worksheet):
         print(f"Warning: Error retrieving next ID: {e}")
         # Return None if failed to get an ID for calling functions (like add_child and add_pet).
         return None
+    
+def validate_input(prompt, validation_func, error_message, **kwargs):
+    """
+    Generic function to validate user input.
+    prompt (str): Message displayed to the user.
+    validation_func (callable): Function to validate the input (return True if valid).
+    error_message (str): Message displayed on invalid input.
+    **kwargs: Additional arguments to pass to the function.
+    Returns:
+    str: Validated user input.
+    """
+    while True: # start an infinite loop that break when on valid input
+        user_input = input(prompt).strip() # removes any leading/trailing spaces.
+        if not user_input: # print a warning for empty input.
+            print("Warning: Input cannot be empty. Please try again.") 
+            continue  # skips the rest of the loop and asks for input again.
+        if validation_func(user_input, **kwargs): # if validation_func returns True, return the valid user input.
+            return user_input
+        else: # If validation_func returns False, print the specific 'error_message'
+            print(error_message)
 
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly
