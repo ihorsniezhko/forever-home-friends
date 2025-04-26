@@ -40,6 +40,39 @@ except Exception as e:
     print(f"Error: An unexpected error occurred accessing worksheets: {e}")
     sys.exit(1)
 
+# Helper Functions Section
+
+def get_next_id(worksheet):
+    """
+    Returns the next consecutive ID for a new entry.
+    Assumes that the IDs are in the first column.
+    Returns ID 1 if the sheet is empty (except header).
+    """
+    # Get all data from the specified worksheet
+    try:
+        all_values = worksheet.get_all_values()
+        # If the sheet has more than one row (header + data),
+        # take all rows starting from the second row (index 1).
+        # Otherwise (if only 0 or 1 row), create an empty list for data_rows.
+        data_rows = all_values[1:] if len(all_values) > 1 else []
+        if not data_rows:
+            return 1 # If there's no data, the first ID is set to 1.
+        # Find the highest existing ID
+        # Initialize a variable to store the maximum ID found.
+        max_id = 0
+        for row in data_rows:
+            # Check if row exists and first cell is digit to avoid errors.
+            if row and row[0].isdigit():
+                # Convert ID to integer, update max_id if the current row ID is greater than current max_id.
+                max_id = max(max_id, int(row[0]))
+        # Calculate and return the next ID
+        return max_id + 1
+    # If any error occurs during the 'try' block, print a warning message with error details. 
+    except Exception as e:
+        print(f"Warning: Error retrieving next ID: {e}")
+        # Return None if failed to get an ID for calling functions (like add_child and add_pet).
+        return None
+
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly
     print("Application start.")
