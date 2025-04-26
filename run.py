@@ -76,12 +76,12 @@ def get_next_id(worksheet):
 def validate_input(prompt, validation_func, error_message, **kwargs):
     """
     Generic function to validate user input.
-    prompt (str): Message displayed to the user.
-    validation_func (callable): Function to validate the input (return True if valid).
-    error_message (str): Message displayed on invalid input.
-    **kwargs: Additional arguments to pass to the function.
+        prompt (str): Message displayed to user.
+        validation_func (callable): Function to validate the input (True if valid).
+        error_message (str): Message displayed on invalid input.
+        **kwargs: Additional arguments to pass.
     Returns:
-    str: Validated user input.
+        str: Validated user input.
     """
     while True: # start an infinite loop that break when on valid input
         user_input = input(prompt).strip() # removes any leading/trailing spaces.
@@ -90,11 +90,26 @@ def validate_input(prompt, validation_func, error_message, **kwargs):
             continue  # skips the rest of the loop and asks for input again.
         if validation_func(user_input, **kwargs): # if validation_func returns True, return the valid user input.
             return user_input
-        else: # If validation_func returns False, print the specific 'error_message'
+        else: # If validation_func returns False, print the specific 'error_message'.
             print(error_message)
 
+def validate_integer(input_str):
+    """Checks if the input string is a valid integer."""
+    return input_str.isdigit()  # check if all characters are digits to ensure the user entered a number (like add ID).
+
+def validate_range(input_str, min_val, max_val):
+    """Checks if input is an integer within a specified range."""
+    if not input_str.isdigit(): # check if all characters are digits.
+        return False
+    value = int(input_str) # convert the input string to integer number
+    return min_val <= value <= max_val # check if that number falls within the specified inclusive range (like add age).
+
+def validate_pet_type(input_str):
+    """Checks if the input is 'puppy' or 'kitty'."""
+    return input_str.lower() in ["puppy", "kitty"] # convert input to lowercase, check if string is present in the predefined list (like add pet, case-insensitive). 
+
 # Placeholder for application logic
-if __name__ == "__main__": # checks if the script is being run directly
+if __name__ == "__main__": # checks if the script is being run directly.
     print("Application start.")
     # Main loop will go here
     print("Application finish.")
