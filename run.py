@@ -106,7 +106,18 @@ def validate_range(input_str, min_val, max_val):
 
 def validate_pet_type(input_str):
     """Checks if the input is 'puppy' or 'kitty'."""
-    return input_str.lower() in ["puppy", "kitty"] # convert input to lowercase, check if string is present in the predefined list (like add pet, case-insensitive). 
+    return input_str.lower() in ["puppy", "kitty"] # convert input to lowercase, check if string is present in the predefined list (like add pet, case-insensitive).
+
+def confirm_action(prompt):
+    """Asks user for Yes/No confirmation."""
+    while True:
+        choice = input(f"{prompt} (Yes/No): ").strip().lower() # ask user a question and only accept "yes" or "no" as valid answers.
+        if choice == "yes":
+            return True
+        elif choice == "no":
+            return False
+        else:
+            print("Warning: Please enter 'Yes' or 'No'.")
 
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
