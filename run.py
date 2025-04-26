@@ -119,6 +119,34 @@ def confirm_action(prompt):
         else:
             print("Warning: Please enter 'Yes' or 'No'.")
 
+def find_row_by_id(worksheet, id_str):
+    """
+    Finds a row in a worksheet by ID (first column).
+        worksheet: The gspread worksheet object.
+        id_str: The ID as a string to search for.
+
+    Returns:
+        tuple: (row_data, row_index) if found, otherwise (None, None).
+               Returns (None, -1) if an error occurs during sheet access.
+    """
+    if not id_str.isdigit(): # сheck if provided 'id_str' actually contains only digits.
+        return None, None # input format is wrong.
+
+    try: # attempt Sheet access
+        all_values = worksheet.get_all_values() # fetch all rows and columns from specified worksheet.
+        for index, row in enumerate(all_values): # provides index of the row and row data.
+            if row and row[0] == id_str: # compare value in the first cell (row[0]) with 'id_str'.
+                return row, index + 1 # return a tuple: list of data for matching row and row number.  
+        return None, None # no row with the specified ID was found.
+    except gspread.exceptions.APIError as e:
+        print(f"Error: Google Sheets API Error: {e}") # if error related to the Google Sheets API
+        print("   Please check your connection and permissions.")
+        return None, -1 # -1 indicate that error occurred during the search, not that the row wasn't found (returns None, None).
+    except Exception as e: # catch other unexpected errors during 'try'.
+        print(f"Warning: An unexpected error occurred finding row by ID: {e}")
+        return None, -1 
+
+
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
     print("Application start.")
