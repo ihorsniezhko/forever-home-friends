@@ -170,6 +170,33 @@ def find_row_by_child_name(worksheet, full_name):
         print(f"Warning: An unexpected error occurred finding row by name: {e}")
         return None, -1
 
+def find_row_by_pet_id(worksheet, pet_id_str):
+    """
+    Finds a row in the Owners worksheet by Pet ID (second column).
+        worksheet: The Owners gspread worksheet object.
+        pet_id_str (str): The pet ID as a string to search for.
+
+    Returns:
+        tuple: (row_data, row_index) if found, otherwise (None, None).
+               Returns (None, -1) if an error occurs during sheet access.
+    """
+    if not pet_id_str.isdigit(): # сheck if provided 'pet_id_str' actually contains only digits.
+        return None, None # # input format is wrong.
+
+    try:
+        all_values = worksheet.get_all_values() # fetch all rows and columns from specified worksheet.
+        for index, row in enumerate(all_values): # provides index of the row and row data.
+            if row and len(row) > 1 and row[1] == pet_id_str: # check if row has at least two columns, compare the value in the second cell with the 'pet_id_str' string.
+                return row, index + 1 # return a tuple: list of data for matching row (Child Name, Pet ID). 
+        return None, None # no row with the specified Pet ID was found.
+    except gspread.exceptions.APIError as e:
+        print(f"Error: Google Sheets API Error: {e}")
+        print("   Please check your connection and permissions.")
+        return None, -1 # -1 indicate that error occurred during the search, not that the ID wasn't found (returns None, None).
+    except Exception as e: # catch other unexpected errors during 'try'.
+        print(f"Warning: An unexpected error occurred finding row by pet ID: {e}")
+        return None, -1
+
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
     print("Application start.")
