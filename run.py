@@ -197,6 +197,51 @@ def find_row_by_pet_id(worksheet, pet_id_str):
         print(f"Warning: An unexpected error occurred finding row by pet ID: {e}")
         return None, -1
 
+# Core Functions Section (Menu Options)
+
+def add_child():
+    """Adds a new child record to the 'Children' sheet."""
+    print("\n- Add New Child -")
+    first_name = input("Enter Child's First Name: ").strip().capitalize() # ask for the first name, remove extra whitespace, make first letter uppercase.
+    if not first_name: # if empty, print a warning and exit.
+        print("Warning: First name cannot be empty.")
+        return
+
+    last_name = input("Enter Child's Last Name: ").strip().capitalize() # ask for the last name, remove extra whitespace, make first letter uppercase.
+    if not last_name: # if empty, print a warning and exit.
+        print("Warning: Last name cannot be empty.")
+        return
+    
+    # Get and Validate Age (valid number string between 5 and 18).
+    age_str = validate_input(
+        "Enter Child's Age (5-18 years): ",  # call validate_input helper function, pass the prompt to display to user. 
+        lambda x: validate_range(x, min_val=5, max_val=18),  # pass validation function using anonymous 'lambda' that calls 'validate_range' ensuring 'x' between 5 and 18.
+        "Warning: Invalid age. Please enter a number between 5 and 18."
+    )
+
+    # Get the Next Available ID
+    next_id = get_next_id(children_sheet) # call the get_next_id helper function
+    if next_id is None:  # check if returned None, indicates error trying to get the ID.
+        print("Error: Could not determine next ID. Aborting.")
+        return
+    # Prepare the New Row Data
+    new_child_data = [next_id, first_name, last_name, int(age_str)] # convert age string to an integer and create a list containing data for the new row.
+    # Try to Append Data to Google Sheet
+    try: # 'try' block as access to Google Sheets can fail.
+        children_sheet.append_row(new_child_data) # 'append_row' method to add 'new_child_data' list as a new bottom row.
+        print("-" * 10)
+        print(f"Success: Child '{first_name} {last_name}' added successfully!") # if append is ok, show a confirmation message
+        print(f"   Assigned ID: {next_id}")
+        print("-" * 10)
+    # Handle Errors During Append
+    except gspread.exceptions.APIError as e: # specific errors related to Google Sheets API.
+        print(f"Error: Google Sheets API Error adding child: {e}")
+        print("   Please check your connection and permissions.")
+    except Exception as e: # any unexpected errors during the append.
+        print(f"Error: An unexpected error occurred adding child: {e}")
+
+
+
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
     print("Application start.")
