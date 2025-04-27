@@ -146,6 +146,29 @@ def find_row_by_id(worksheet, id_str):
         print(f"Warning: An unexpected error occurred finding row by ID: {e}")
         return None, -1 
 
+def find_row_by_child_name(worksheet, full_name):
+    """
+    Finds a row in the Owners worksheet by child's full name.
+        worksheet: Owners gspread worksheet object.
+        full_name (str): Child's full name to search for.
+
+    Returns:
+        tuple: (row_data, row_index) if found, otherwise (None, None).
+               Returns (None, -1) if an error occurs during sheet access.
+    """
+    try:
+        all_values = worksheet.get_all_values() # fetch all rows and columns from specified worksheet.
+        for index, row in enumerate(all_values): # provides index of the row and row data.
+            if row and len(row) > 0 and row[0] == full_name:  # check if row has at least one column, compare the value in the first cell with the 'full_name' string. 
+                return row, index + 1 # return a tuple: list of data for matching row (Child Name, Pet ID). 
+        return None, None # no row with the specified child's name was found.
+    except gspread.exceptions.APIError as e:
+        print(f"Error: Google Sheets API Error: {e}")
+        print("   Please check your connection and permissions.")
+        return None, -1 # -1 indicate that error occurred during the search, not that the name wasn't found (returns None, None).
+    except Exception as e: # catch other unexpected errors during 'try'.
+        print(f"Warning: An unexpected error occurred finding row by name: {e}")
+        return None, -1
 
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
