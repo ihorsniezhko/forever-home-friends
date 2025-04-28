@@ -212,7 +212,7 @@ def add_child():
         print("Warning: Last name cannot be empty.")
         return
     
-    # Get and Validate Age (valid number string between 5 and 18).
+    # Get and Validate Age (valid number string between 5 and 18 years).
     age_str = validate_input(
         "Enter Child's Age (5-18 years): ",  # call validate_input helper function, pass the prompt to display to user. 
         lambda x: validate_range(x, min_val=5, max_val=18),  # pass validation function using anonymous 'lambda' that calls 'validate_range' ensuring 'x' between 5 and 18.
@@ -224,8 +224,10 @@ def add_child():
     if next_id is None:  # check if returned None, indicates error trying to get the ID.
         print("Error: Could not determine next ID. Aborting.")
         return
+    
     # Prepare the New Row Data
     new_child_data = [next_id, first_name, last_name, int(age_str)] # convert age string to an integer and create a list containing data for the new row.
+
     # Try to Append Data to Google Sheet
     try: # 'try' block as access to Google Sheets can fail.
         children_sheet.append_row(new_child_data) # 'append_row' method to add 'new_child_data' list as a new bottom row.
@@ -233,14 +235,53 @@ def add_child():
         print(f"Success: Child '{first_name} {last_name}' added successfully!") # if append is ok, show a confirmation message
         print(f"   Assigned ID: {next_id}")
         print("-" * 10)
-    # Handle Errors During Append
     except gspread.exceptions.APIError as e: # specific errors related to Google Sheets API.
         print(f"Error: Google Sheets API Error adding child: {e}")
-        print("   Please check your connection and permissions.")
+        print("   Check your connection and permissions.")
     except Exception as e: # any unexpected errors during the append.
         print(f"Error: An unexpected error occurred adding child: {e}")
 
+def add_pet():
+    """Adds a new pet record to the 'Pets' sheet."""
+    print("\n- Add New Pet -")
+    nickname = input("Enter Pet's Nickname: ").strip().capitalize() # ask for the  Pet's Nickname, remove extra whitespace, make first letter uppercase.
+    if not nickname: # if empty, print a warning and exit.
+        print("Warning: Nickname cannot be empty.")
+        return
+    
+    # Get and Validate Age (valid number string between 0 and 12 months).
+    age_str = validate_input(
+        "Enter Pet's Age (0-12 months): ", # call validate_input helper function, pass the prompt to display to user. 
+        lambda x: validate_range(x, min_val=0, max_val=12), # pass validation function using anonymous 'lambda' that calls 'validate_range' ensuring 'x' between 0 and 12.
+        "Warning: Invalid age. Please enter a number between 0 and 12."
+    )
+    # Get and Validate Pet Type
+    pet_type = validate_input(
+        "Enter Pet Type (puppy or kitty): ", # call validate_input helper function, pass the prompt to display to user. 
+        validate_pet_type,
+        "Warning: Invalid type. Please enter 'puppy' or 'kitty'." # pass validate_pet_type function
+    ).lower() # convert to lowercase after validation
 
+    # Get the Next Available ID
+    next_id = get_next_id(pets_sheet) # call the get_next_id helper function
+    if next_id is None: # check if returned None, indicates error trying to get the ID.
+        print("Error: Could not determine next ID. Aborting.")
+        return
+
+    new_pet_data = [next_id, nickname, int(age_str), pet_type] # convert age string to an integer and create a list containing data for the new row.
+
+    # Try to Append Data to Google Sheet
+    try: # 'try' block as access to Google Sheets can fail.
+        pets_sheet.append_row(new_pet_data) # 'append_row' method to add 'new_pet_data' list as a new bottom row.
+        print("-" * 10)
+        print(f"Success: Pet '{nickname}' ({pet_type}) added successfully!") # if append is ok, show a confirmation message
+        print(f"   Assigned ID: {next_id}")
+        print("-" * 10)
+    except gspread.exceptions.APIError as e: # specific errors related to Google Sheets API.
+        print(f"Error: Google Sheets API Error adding pet: {e}")
+        print("   Check your connection and permissions.")
+    except Exception as e: # any unexpected errors during the append.
+        print(f"Error: An unexpected error occurred adding pet: {e}")
 
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
