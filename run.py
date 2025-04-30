@@ -283,6 +283,104 @@ def add_pet():
     except Exception as e: # any unexpected errors during the append.
         print(f"Error: An unexpected error occurred adding pet: {e}")
 
+def link_child_pet():
+    """Links a child to a pet in the 'Owners' sheet."""
+    print("\n- Link Child and Pet -")
+
+    # Get and Validate Child ID
+    while True:
+        child_id_str = validate_input(
+            "Enter ID of the Child: ", # call validate_input helper function, pass the prompt to display to user.
+            validate_integer, # pass validate_integer function
+            "Warning: Invalid ID. Please enter the child's ID number."
+        )
+        child_data, child_row_index = find_row_by_id(children_sheet, child_id_str) # use find_row_by_id function and tuple unpacking to search the 'children_sheet' for given ID.
+
+        if child_row_index == -1: # check if find_row_by_id returned an error signal (-1).
+             return # exit if sheet access failed.
+        
+        # If child_data was found (not None).
+        if child_data:
+            child_name = f"{child_data[1]} {child_data[2]}" # construct child's name using list indexing.
+            print(f"   Found Child: {child_name} (Age: {child_data[3]})") # print child's details for confirmation.
+            break # break 'while' loop as child was found.
+        else:
+            print(f"Warning: Child with ID {child_id_str} not found.")  # if child not found, print a warning and contiue the loop.
+
+    # Get and Validate Pet ID
+    while True:
+        pet_id_str = validate_input(
+            "Enter ID of the Pet: ", # call validate_input helper function, pass the prompt to display to user.
+            validate_integer, # pass validate_integer function
+            "Warning: Invalid ID. Please enter the pet's ID number."
+        )
+        pet_data, pet_row_index = find_row_by_id(pets_sheet, pet_id_str) # use find_row_by_id function and tuple unpacking to search the 'pets_sheet' for given ID.
+
+        if pet_row_index == -1: # check if find_row_by_id returned an error signal (-1).
+             return # exit if sheet access failed.
+        
+        # If pet_data was found (not None).
+        if pet_data:
+            print(f"   Found Pet: {pet_data[1]} ({pet_data[3]}, Age: {pet_data[2]} months)") # print pets's details for confirmation (list indexing).
+            break
+        else:
+            print(f"Warning: Pet with ID {pet_id_str} not found.") # if pet not found, print a warning and contiue the loop.
+
+    # Check if child already has a pet linked
+    try: # check if this child already has a link in the 'Owners' sheet.
+        existing_link, _ = find_row_by_child_name(owners_sheet, child_name) # tuple unpacking, ignoring second value.
+        if existing_link and len(existing_link) > 1 and existing_link[1]: # check if row is found and a Pet ID in the second column.
+            print("-" * 10)
+            print(f"Warning: Child '{child_name}' is already linked to Pet ID #{existing_link[1]}.") # warn the user about the existing link (it will be overwritten).
+            if not confirm_action("Do you want to replace the existing link?"):  # ask if user wants to proceed to replace the existing link.
+                print("   Operation cancelled.") # If confirm_action returns False, exit the link_child_pet function.
+                return
+        # Check if pet is already assigned to some child
+        pet_link, _ = find_row_by_pet_id(owners_sheet, pet_id_str)
+        if pet_link:
+            print(f"Warning: Pet '{pet_data[1]}' (ID: {pet_id_str}) is already linked to '{pet_link[0]}'.") # if a link is found, warn the user.
+            print("   Assigning this pet will remove its link from the previous owner.")
+
+    except Exception as e:
+         print(f"Warning: Error checking existing links: {e}")  # if an error occurs during check, print a warning.
+
+    # Confirm linking
+    print("-" * 10)
+    link_prompt = f"Assign Pet '{pet_data[1]}' (ID #{pet_id_str}) to Child '{child_name}' (ID #{child_id_str})?" # detailed confirmation prompt.
+    if confirm_action(link_prompt):
+        try:
+            owner_row_data, owner_row_index = find_row_by_child_name(owners_sheet, child_name) # if child exists in Owners, try to update, otherwise add new row.
+
+            if owner_row_index == -1: # error during Owners check, exit.
+                return
+
+            # Handle Pet Reassignment
+            prev_owner_row, prev_owner_index = find_row_by_pet_id(owners_sheet, pet_id_str) # check if this Pet ID exists in Owners sheet.
+            if prev_owner_index and prev_owner_index != owner_row_index: # chech if pet was linked before and present in different row than the current child row.
+                 print(f"   Clearing previous owner ({prev_owner_row[0]}) link to Pet ID #{pet_id_str}...")
+                 owners_sheet.update_cell(prev_owner_index, 2, "") # clear Pet ID from the previous owner's row.
+            
+            # Add or Update Link
+            if owner_row_data: # check if child was already found in the Owners sheet.
+                owners_sheet.update_cell(owner_row_index, 2, int(pet_id_str)) # update the Pet ID.
+                print(f"Success: Link updated in 'Owners' sheet (Row {owner_row_index}).") # confirm update.
+            else:
+                owners_sheet.append_row([child_name, int(pet_id_str)]) # if child not found, append a new row with Child Name and new Pet ID.
+                print("Success: Link added to 'Owners' sheet.") # confirm append.
+
+            print("-" * 10)
+            print(f"Success: Successfully linked Child '{child_name}' and Pet '{pet_data[1]}'.") # show operation success message.
+            print("-" * 10)
+
+        # Handle Sheet Update Errors
+        except gspread.exceptions.APIError as e:
+            print(f"Error: Google Sheets API Error linking child/pet: {e}")
+        except Exception as e:
+            print(f"Error: An unexpected error occurred linking child/pet: {e}")
+    else:
+        print("   Operation cancelled.") # if confirm_action returned False (user choose "no")
+
+
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
     print("Application start.")
