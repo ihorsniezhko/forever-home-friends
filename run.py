@@ -380,6 +380,58 @@ def link_child_pet():
     else:
         print("   Operation cancelled.") # if confirm_action returned False (user choose "no")
 
+def search_by_child():
+    """Searches for the pet linked to a specific child."""
+    print("\n- Search Pet by Child -")
+    # Get and validate child ID
+    child_id_str = validate_input( # validate_input to get a numeric string ID from the user.
+        "Enter ID of the Child: ",
+        validate_integer,
+        "Warning: Invalid ID. Please enter the child's ID number."
+    )
+    # Find child in Children Sheet
+    child_data, child_row_index = find_row_by_id(children_sheet, child_id_str) # use find_row_by_id function and tuple unpacking to find child in the 'children_sheet'.
+
+    if child_row_index == -1: return # check if find_row_by_id returned an error signal (-1).
+    if not child_data:
+        print(f"Warning: Child with ID {child_id_str} not found in 'Children' sheet.") # if not found, warn and exit function.
+        return
+    # Construct child name and inform user
+    child_name = f"{child_data[1]} {child_data[2]}" # construct child's full name.
+    print(f"   Searching for pet linked to: {child_name} (Age: {child_data[3]})") # show whose pet to look for.
+
+    # Search for child-pet link in Owners sheet
+    try:
+        owner_row, owner_row_index = find_row_by_child_name(owners_sheet, child_name) # use find_row_by_child_name function to find child's entry in 'owners_sheet'.
+
+        if owner_row_index == -1: return # check if find_row_by_id returned an error signal (-1).
+
+        # Check if child is linked to a pet
+        if owner_row and len(owner_row) > 1 and owner_row[1]: # check if row has at least two columns and if the second column (Pet ID, index 1) is not empty.
+            pet_id_str = owner_row[1] # get Pet ID string from the second column of the owner row.
+            pet_data, pet_row_index = find_row_by_id(pets_sheet, pet_id_str) # use find_row_by_id function to find the corresponding pet in the 'pets_sheet'.
+            if pet_row_index == -1: return # check if find_row_by_id returned an error signal (-1).
+            if pet_data: # if found, print details of child and linked pet.
+                print("-" * 10)
+                print(f"Success: Found Link:") 
+                print(f"   Child: {child_name} (ID #{child_id_str})")
+                print(f"   Pet:   {pet_data[1]} (ID #{pet_id_str}), Type: {pet_data[3]}, Age: {pet_data[2]} months")
+                print("-" * 10)
+            else: # in not found (link exists in Owners but pet was deleted from Pets), warn about data inconsistency.
+                print("-" * 10)
+                print(f"Warning: Found link for {child_name} to Pet ID #{pet_id_str}, but this pet doesn't exist in the 'Pets' sheet.")
+                print("   Please check data consistency.")
+                print("-" * 10)
+        else: # if owner_row not found, or if Pet ID column empty, inform that child has no linked pet.
+            print("-" * 10)
+            print(f"Info: Child '{child_name}' (ID #{child_id_str}) is not currently linked to any pet in the 'Owners' sheet.")
+            print("-" * 10)
+    # Handle Errors during Sheet Access
+    except gspread.exceptions.APIError as e:
+        print(f"Error: Google Sheets API Error searching by child: {e}") # if error related to the Google Sheets API
+    except Exception as e:
+        print(f"Error: An unexpected error occurred searching by child: {e}") # any unexpected errors during the search.
+
 
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
