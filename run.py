@@ -491,6 +491,59 @@ def search_by_pet():
     except Exception as e:
         print(f"Error: An unexpected error occurred searching by pet: {e}") # any unexpected errors during the search.
 
+def delete_child():
+    """Deletes a child from 'Children' and corresponding row in 'Owners'."""
+    print("\n- Delete Child -")
+    # Get and Validate child ID
+    child_id_str = validate_input( # validate_input to get a numeric string ID from the user.
+        "Enter ID of the Child to Delete: ",
+        validate_integer,
+        "Warning: Invalid ID. Please enter the child's ID number."
+    )
+
+    # Find child in Children Sheet
+    child_data, child_row_index = find_row_by_id(children_sheet, child_id_str) # use find_row_by_id function and tuple unpacking to find child in the 'children_sheet'.
+
+    if child_row_index == -1: return # check if find_row_by_id returned an error signal (-1).
+    if not child_data:
+        print(f"Warning: Child with ID {child_id_str} not found.") # if not found, warn and exit function.
+        return
+    # Construct child name and inform user
+    child_name = f"{child_data[1]} {child_data[2]}" # construct child's full name.
+    print("-" * 10)
+    print(f"   Child Found: {child_name} (Age: {child_data[3]}) - ID #{child_id_str}") # show which child was found.
+    print("   Warning: Deleting this child will also remove their entry from the 'Owners' sheet.") # warn about removing the link too)
+    print("-" * 10)
+
+    # Confirm Deletion
+    delete_prompt = f"Are you sure you want to delete child '{child_name}' (ID #{child_id_str})?"
+    if confirm_action(delete_prompt): # call confirm_action and proceed only if it returns True.
+        try: # try block for sheet modification (may fail).
+            children_sheet.delete_rows(child_row_index) # delete from Children sheet (delete_rows method, pass row index).
+            print(f"   Deleted row {child_row_index} from 'Children' sheet.")
+
+            # Find and delete from Owners sheet
+            owner_row, owner_row_index = find_row_by_child_name(owners_sheet, child_name)  # search 'owners_sheet' for matching the child's name.
+            if owner_row_index == -1: # check if find_row_by_child_name returned an error signal (-1).
+                print("Warning: Could not check 'Owners' sheet due to an error, but child deleted from 'Children'.")  # child already deleted from the Children sheet at this point.
+            elif owner_row:
+                owners_sheet.delete_rows(owner_row_index) # if owner_row exist, delete row using index.
+                print(f"   Deleted row {owner_row_index} from 'Owners' sheet.")
+            else:
+                print("   Info: No corresponding entry found in 'Owners' sheet.") # if owner_row not exist, inform that no deletion needed.
+
+            print("-" * 10)
+            print(f"Success: Child '{child_name}' successfully deleted.") # show operation success message.
+            print("-" * 10)
+
+        # Handle Errors during Sheet Access
+        except gspread.exceptions.APIError as e:
+            print(f"Error: Google Sheets API Error deleting child: {e}") # if error related to the Google Sheets API
+        except Exception as e:
+            print(f"Error: An unexpected error occurred deleting child: {e}") # any unexpected errors during the search.
+    else:
+        print("   Deletion cancelled.")
+
 
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
