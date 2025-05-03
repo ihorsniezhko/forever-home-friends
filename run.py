@@ -602,8 +602,44 @@ def exit_app():
     print("\nThank you for using Forever Home Friends!")
     sys.exit() # call sys.exit from imported 'sys' module for clean exit from the script.
 
-# Placeholder for application logic
-if __name__ == "__main__": # checks if the script is being run directly.
-    print("Application start.")
-    # Main loop will go here
-    print("Application finish.")
+# Main Application Loop
+def main():
+    """Runs the main application menu loop."""
+    print("Welcome to Forever Home Friends!")
+
+    while True: # 'while True' loop runs until explicitly stopped by sys.exit, keeps the menu displaying after each action.
+        print("\n- Main Menu -")
+        print("1. Add a Child")
+        print("2. Add a Pet")
+        print("3. Link Child and Pet")
+        print("4. Search Pet by Child ID")
+        print("5. Search Child by Pet ID")
+        print("6. Delete a Child by ID")
+        print("7. Delete a Pet by ID")
+        print("8. Exit Application")
+        print("-" * 15)
+
+        choice = input("Please enter your choice (1-8): ").strip()  # prompt the user and get input string removing whitespace.
+
+        if choice == '1': # if/elif/else structure to check the user's choice.
+            add_child()
+        elif choice == '2':
+            add_pet()
+        elif choice == '3':
+            link_child_pet()
+        elif choice == '4':
+            search_by_child()
+        elif choice == '5':
+            search_by_pet()
+        elif choice == '6':
+            delete_child()
+        elif choice == '7':
+            delete_pet()
+        elif choice == '8':
+            exit_app()
+        else:
+            print("Warning: Invalid choice. Please enter a number between 1 and 8.") # if the input doesn't match any choice 
+
+# Run the application
+if __name__ == "__main__": # ensure that main function is called only when we run run.py directly from the command line.
+    main()
