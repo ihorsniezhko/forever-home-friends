@@ -597,6 +597,11 @@ def delete_pet():
     else:
         print("   Deletion cancelled.")
 
+def exit_app():
+    """Exits the application."""
+    print("\nThank you for using Forever Home Friends!")
+    sys.exit() # call sys.exit from imported 'sys' module for clean exit from the script.
+
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
     print("Application start.")
