@@ -104,10 +104,6 @@ def validate_range(input_str, min_val, max_val):
     value = int(input_str) # convert the input string to integer number
     return min_val <= value <= max_val # check if that number falls within the specified inclusive range (like add age).
 
-def validate_pet_type(input_str):
-    """Checks if the input is 'puppy' or 'kitty'."""
-    return input_str.lower() in ["puppy", "kitty"] # convert input to lowercase, check if string is present in the predefined list (like add pet, case-insensitive).
-
 def confirm_action(prompt):
     """Asks user for Yes/No confirmation."""
     while True:
@@ -256,11 +252,20 @@ def add_pet():
         "Warning: Invalid age. Please enter a number between 0 and 12."
     )
     # Get and Validate Pet Type
-    pet_type = validate_input(
-        "Enter Pet Type (puppy or kitty): ", # call validate_input helper function, pass the prompt to display to user. 
-        validate_pet_type,
-        "Warning: Invalid type. Please enter 'puppy' or 'kitty'." # pass validate_pet_type function
-    ).lower() # convert to lowercase after validation
+    pet_type_short = validate_input(
+        "Enter Pet Type (p for puppy / k for kitty): ", # call validate_input helper function, pass the prompt to display to user.
+        lambda x: x.lower() in ['p', 'k'], # lambda function to ensure the validated input is lowercse ('p' or 'k').
+        "Warning: Invalid type. Please enter 'p' or 'k'."
+    ).lower() # ensure that final value is always lowercase.
+
+    # Convert 'p' / 'k' to 'puppy' / 'kitty'for storage
+    if pet_type_short == 'p':
+        pet_type = 'puppy'
+    elif pet_type_short == 'k':
+        pet_type = 'kitty'
+    else:
+        print("Error: Unexpected error processing pet type. Aborting.") # fallback in case of error.
+        return
 
     # Get the Next Available ID
     next_id = get_next_id(pets_sheet) # call the get_next_id helper function
@@ -617,7 +622,7 @@ def main():
         print("6. Delete a Child by ID")
         print("7. Delete a Pet by ID")
         print("8. Exit Application")
-        print("-" * 15)
+        print("-" * 30)
 
         choice = input("Please enter your choice (1-8): ").strip()  # prompt the user and get input string removing whitespace.
 
@@ -639,7 +644,8 @@ def main():
             exit_app()
         else:
             print("Warning: Invalid choice. Please enter a number between 1 and 8.") # if the input doesn't match any choice 
-
+        
+        input("\nPress Enter to return to the main menu...") # pause so the the user can easily see the output.
 # Run the application
 if __name__ == "__main__": # ensure that main function is called only when we run run.py directly from the command line.
     main()
