@@ -496,7 +496,7 @@ def delete_child():
     print("\n- Delete Child -")
     # Get and Validate child ID
     child_id_str = validate_input( # validate_input to get a numeric string ID from the user.
-        "Enter ID of the Child to Delete: ",
+        "Enter ID of the Child to delete: ",
         validate_integer,
         "Warning: Invalid ID. Please enter the child's ID number."
     )
@@ -512,7 +512,7 @@ def delete_child():
     child_name = f"{child_data[1]} {child_data[2]}" # construct child's full name.
     print("-" * 10)
     print(f"   Child Found: {child_name} (Age: {child_data[3]}) - ID #{child_id_str}") # show which child was found.
-    print("   Warning: Deleting this child will also remove their entry from the 'Owners' sheet.") # warn about removing the link too)
+    print("   Warning: Deleting this child will also remove their entry from the 'Owners' sheet.") # warn about removing the link too.
     print("-" * 10)
 
     # Confirm Deletion
@@ -544,6 +544,58 @@ def delete_child():
     else:
         print("   Deletion cancelled.")
 
+def delete_pet():
+    """Deletes a pet from 'Pets' and clears the link in 'Owners'."""
+    print("\n- Delete Pet -")
+    pet_id_str = validate_input( # validate_input to get a numeric string ID from the user.
+        "Enter ID of the Pet to delete: ",
+        validate_integer,
+        "Warning: Invalid ID. Please enter the pet's ID number."
+    )
+
+    # Find pet in Pets Sheet
+    pet_data, pet_row_index = find_row_by_id(pets_sheet, pet_id_str) # use find_row_by_id function and tuple unpacking to find pet in the 'pet_sheet'.
+
+    if pet_row_index == -1: return # check if find_row_by_id returned an error signal (-1).
+    if not pet_data:
+        print(f"Warning: Pet with ID {pet_id_str} not found.") # if not found, warn and exit function.
+        return
+
+    # Show pet data and inform user
+    print("-" * 10)
+    print(f"   Pet Found: {pet_data[1]} ({pet_data[3]}, Age: {pet_data[2]} months) - ID #{pet_id_str}") # show which pet was found.
+    print("   Warning: Deleting this pet will also clear its assignment in the 'Owners' sheet.") # warn about removing the link too.
+    print("-" * 10)
+
+    # Confirm Deletion
+    delete_prompt = f"Are you sure you want to delete Pet '{pet_data[1]}' (ID #{pet_id_str})?"
+    if confirm_action(delete_prompt): # call confirm_action and proceed only if it returns True.
+        try: # try block for sheet modification (may fail).
+            pets_sheet.delete_rows(pet_row_index) # delete from Pet sheet (delete_rows method, pass row index).
+            print(f"   Deleted row {pet_row_index} from 'Pets' sheet.")
+
+            # Find and delete from Owners sheet
+            owner_row, owner_row_index = find_row_by_pet_id(owners_sheet, pet_id_str) # search 'owners_sheet' for matching the pet's ID.
+
+            if owner_row_index == -1: # # check if find_row_by_pet_id returned an error signal (-1).
+                print("Warning: Could not check 'Owners' sheet due to an error, but pet deleted from 'Pets'.") # pet already deleted from the Pets sheet at this point.
+            elif owner_row:
+                owners_sheet.update_cell(owner_row_index, 2, "") # if owner_row exist, clear the Pet ID cell using update_cell takes and "" value. 
+                print(f"   Cleared Pet ID link in 'Owners' sheet (Row {owner_row_index}).")
+            else:
+                print("   Info: No corresponding link found in 'Owners' sheet.") # if owner_row not exist, inform that no deletion needed.
+
+            print("-" * 10)
+            print(f"Success: Pet '{pet_data[1]}' successfully deleted.") # show operation success message.
+            print("-" * 10)
+
+        # Handle Errors during Sheet Access
+        except gspread.exceptions.APIError as e:
+            print(f"Error: Google Sheets API Error deleting pet: {e}") # if error related to the Google Sheets API
+        except Exception as e:
+            print(f"Error: An unexpected error occurred deleting pet: {e}") # any unexpected errors during the search.
+    else:
+        print("   Deletion cancelled.")
 
 # Placeholder for application logic
 if __name__ == "__main__": # checks if the script is being run directly.
