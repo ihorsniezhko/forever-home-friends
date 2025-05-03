@@ -105,15 +105,15 @@ def validate_range(input_str, min_val, max_val):
     return min_val <= value <= max_val # check if that number falls within the specified inclusive range (like add age).
 
 def confirm_action(prompt):
-    """Asks user for Yes/No confirmation."""
+    """Asks for Yes/No confirmation (accepts y/n)."""
     while True:
-        choice = input(f"{prompt} (Yes/No): ").strip().lower() # ask user a question and only accept "yes" or "no" as valid answers.
-        if choice == "yes":
+        choice = input(f"{prompt} (y/n): ").strip().lower() # ask user a question and only accept "y" or "n" as valid answers.
+        if choice == "y":
             return True
-        elif choice == "no":
+        elif choice == "n":
             return False
         else:
-            print("Warning: Please enter 'Yes' or 'No'.")
+            print("Warning: Please enter 'y' or 'n'.")
 
 def find_row_by_id(worksheet, id_str):
     """
