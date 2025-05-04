@@ -195,3 +195,11 @@ Manual testing was performed extensively to cover all application features and p
 * [Google Drive API](https://developers.google.com/drive/api/v3/about-sdk)
 * [Google Cloud Platform (GCP)](https://cloud.google.com/) - For Service Account credentials.
 * [Node.js](https://nodejs.org/) - Used by the Heroku deployment template for the web terminal interface.
+
+## Credits
+
+* **Python 3:** For the core programming language and its standard library (including the `sys` module).
+* **gspread library:** For enabling easy interaction with Google Sheets via Python.
+* **google-auth library:** For handling Google API authentication.
+* **Google:** For providing the Sheets and Drive APIs, and the Google Cloud Platform for authentication.
+* **Code Institute:** For the Heroku deployment template.
