@@ -21,6 +21,7 @@ The application provides a text-based menu interface for easy interaction. You w
 -------------------------
 Please enter your choice (1-8):
 ```
+![Application Main menu](/media/forever-home-friends-menu-0.png)
 
 Follow the on-screen prompts to perform actions:
 * Enter the corresponding number for the desired operation.
@@ -33,15 +34,42 @@ The application includes input validation to guide the user and provides status 
 ## Features
 
 * **Add Child:** Add a new child record (First Name, Last Name, Age 5-18) to the "Children" sheet. Assigns a unique sequential ID. Validates input and handles potential errors.
+
+![Add Child menu option](/media/forever-home-friends-menu-1.png)
+
 * **Add Pet:** Add a new pet record (Nickname, Age 0-12 months, Type) to the "Pets" sheet. Accepts 'p' or 'k' (case-insensitive) for pet type input but stores the full word "puppy" or "kitty". Assigns a unique sequential ID. Validates input and handles errors.
+
+![Add Pet menu option](/media/forever-home-friends-menu-2.png)
+
 * **Link Child and Pet:** Create an association between an existing child and an existing pet using their IDs. Updates the "Owners" sheet.
     * Warns if the selected child already has a pet linked and asks for confirmation to replace the link.
     * Warns if the selected pet is already linked to another child (assigning it will remove the previous link).
     * Handles adding new entries or updating existing entries in the "Owners" sheet.
+    
+![Link Child and Pet menu option](/media/forever-home-friends-menu-3.png)
+
 * **Search Pet by Child ID:** Find and display the details of the pet linked to a specific child ID by searching the "Owners" and "Pets" sheets. Handles cases where the child or pet is not found or not linked, including potential data inconsistencies.
+
+![Search Pet by Child ID menu option](/media/forever-home-friends-menu-4.png)
+
 * **Search Child by Pet ID:** Find and display the details of the child linked to a specific pet ID by searching the "Owners" and "Children" sheets. Handles cases where the pet or child is not found or not linked, including potential data inconsistencies.
+
+![Search Child by Pet ID menu option](/media/forever-home-friends-menu-5.png)
+
 * **Delete Child by ID:** Remove a child record from the "Children" sheet after confirmation ('y'/'n'). Also finds and removes the corresponding *entire row* from the "Owners" sheet.
+
+![Delete Child by ID menu option](/media/forever-home-friends-menu-6.png)
+
 * **Delete Pet by ID:** Remove a pet record from the "Pets" sheet after confirmation ('y'/'n'). Also finds the corresponding entry in the "Owners" sheet and *clears the Pet ID cell*, leaving the child entry intact but unlinked.
+
+![Delete Pet by ID menu option](/media/forever-home-friends-menu-7.png)
+
+* **Exit Application:** Terminate and clean exit from the application.
+
+![Exit Application menu option](/media/forever-home-friends-menu-8.png)
+
+## Implementation
+
 * **Data Persistence:** All data is stored in a Google Sheet, ensuring information is saved between application runs.
 * **Input Validation:** Includes robust checks via helper functions for valid numeric input (integers), value ranges (ages), specific characters ('p'/'k'), non-empty input, and confirmation ('y'/'n').
 * **User Feedback:** Provides clear status messages ("Success:", "Warning:", "Error:", "Info:") for operations and potential issues.
