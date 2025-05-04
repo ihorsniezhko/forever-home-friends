@@ -171,3 +171,13 @@ Manual testing was performed extensively to cover all application features and p
 ### Validator Testing
 
 * The Python code (`run.py`) was checked using the Flake8 linter (`flake8 run.py`). No major PEP8 violations or logical errors were reported.
+
+## Technologies Used
+
+* [Python 3](https://www.python.org/) - Version 3.13.1.
+* [gspread](https://github.com/burnash/gspread) Python library - For interacting with Google Sheets.
+* [google-auth & google-auth-oauthlib](https://github.com/googleapis/google-auth-library-python) - For handling Google API authentication (`Credentials` class).
+* [Google Sheets API](https://developers.google.com/sheets/api)
+* [Google Drive API](https://developers.google.com/drive/api/v3/about-sdk)
+* [Google Cloud Platform (GCP)](https://cloud.google.com/) - For Service Account credentials.
+* [Node.js](https://nodejs.org/) - Used by the Heroku deployment template for the web terminal interface.
