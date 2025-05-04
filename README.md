@@ -172,6 +172,20 @@ Manual testing was performed extensively to cover all application features and p
 
 * The Python code (`run.py`) was checked using the Flake8 linter (`flake8 run.py`). No major PEP8 violations or logical errors were reported.
 
+## Known Issues
+
+* **Single Pet per Child:** The current version only allows one pet to be linked to one child. Attempting to link a second pet will overwrite the first link after confirmation.
+* **Name Uniqueness Assumption:** The application relies on child names (First + Last) being unique when searching the "Owners" sheet (`find_row_by_child_name`) and when looking up child details based on a name from the "Owners" sheet (`search_by_pet`). Duplicate child names could lead to unexpected behavior (e.g., finding the wrong child's link, or `search_by_pet` finding the first matching name in the Children sheet).
+* **Limited Search:** Search functionality is currently limited to lookup by ID.
+
+## Future Enhancements
+
+* Allowing a child to be linked to multiple pets (would require changing the "Owners" sheet structure).
+* Using Child ID instead of Child Name in the "Owners" sheet to avoid ambiguity with duplicate names.
+* Adding search functionality based on other criteria (e.g., pet type, child age, child name).
+* Implementing data sorting or viewing options.
+* Developing a graphical user interface (GUI).
+
 ## Technologies Used
 
 * [Python 3](https://www.python.org/) - Version 3.13.1.
