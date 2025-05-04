@@ -70,5 +70,3 @@ The application utilizes a Google Sheet named `forever_home_friends` for data st
     * Column 2: `Pet Number` (Integer, the ID from the Pets sheet)
 
 ---
-
-## Deployment
