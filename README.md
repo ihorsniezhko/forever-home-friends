@@ -30,8 +30,6 @@ Follow the on-screen prompts to perform actions:
 
 The application includes input validation to guide the user and provides status messages (Success, Warning, Error, Info) for feedback.
 
----
-
 ## Features
 
 * **Add Child:** Add a new child record (First Name, Last Name, Age 5-18) to the "Children" sheet. Assigns a unique sequential ID. Validates input and handles potential errors.
@@ -48,8 +46,6 @@ The application includes input validation to guide the user and provides status 
 * **Input Validation:** Includes robust checks via helper functions for valid numeric input (integers), value ranges (ages), specific characters ('p'/'k'), non-empty input, and confirmation ('y'/'n').
 * **User Feedback:** Provides clear status messages ("Success:", "Warning:", "Error:", "Info:") for operations and potential issues.
 * **Error Handling:** Uses `try...except` blocks to gracefully handle potential errors during Google Sheet API interactions (e.g., `FileNotFoundError`, `SpreadsheetNotFound`, `WorksheetNotFound`, `APIError`) and provides informative messages.
-
----
 
 ## Data Storage
 
@@ -69,4 +65,109 @@ The application utilizes a Google Sheet named `forever_home_friends` for data st
     * Column 1: `Child's name` (Text, format: "First Name Last Name" from Children sheet)
     * Column 2: `Pet Number` (Integer, the ID from the Pets sheet)
 
----
+## Testing
+
+Manual testing was performed extensively to cover all application features and potential user inputs.
+
+**1. Add Child (Menu Option 1)**
+
+* **Action:** Enter valid details (Name, Age within 5-18).
+    * **Expected Outcome:** Child added to 'Children' sheet, Success message with new ID displayed.
+* **Action:** Enter non-numeric age (e.g., "abc").
+    * **Expected Outcome:** Warning message about invalid age, age prompt repeats.
+* **Action:** Enter age outside range (e.g., 4 or 19).
+    * **Expected Outcome:** Warning message about age range, age prompt repeats.
+* **Action:** Enter empty first or last name.
+    * **Expected Outcome:** Warning message about empty input, returns to relevant prompt or menu.
+
+**2. Add Pet (Menu Option 2)**
+
+* **Action:** Enter valid details (Nickname, Age 0-12, Type 'p' or 'k').
+    * **Expected Outcome:** Pet added to 'Pets' sheet (storing full type "puppy"/"kitty"), Success message with new ID displayed.
+* **Action:** Enter invalid pet type (e.g., 'd').
+    * **Expected Outcome:** Warning message "enter 'p' or 'k'", type prompt repeats.
+* **Action:** Enter non-numeric age (e.g., "xyz").
+    * **Expected Outcome:** Warning message about invalid age, age prompt repeats.
+* **Action:** Enter age outside range (e.g., -1 or 13).
+    * **Expected Outcome:** Warning message about age range, age prompt repeats.
+* **Action:** Enter empty nickname.
+    * **Expected Outcome:** Warning message about empty input, returns to relevant prompt or menu.
+
+**3. Link Child & Pet (Menu Option 3)**
+
+* **Action:** Enter valid, existing, unlinked Child and Pet IDs, confirm 'y'.
+    * **Expected Outcome:** Child/Pet details shown, final confirmation 'y', "Owners" sheet updated, Success message.
+* **Action:** Enter non-existent Child ID.
+    * **Expected Outcome:** Warning "Child with ID ... not found", ID prompt repeats.
+* **Action:** Enter non-existent Pet ID (after valid Child ID).
+    * **Expected Outcome:** Warning "Pet with ID ... not found", ID prompt repeats.
+* **Action:** Enter valid IDs where the Child is already linked, confirm replacement ('y').
+    * **Expected Outcome:** Warning about existing link shown, replace confirmation prompt shown, user enters 'y', final confirmation prompt shown, user enters 'y', link updated in "Owners", Success message.
+* **Action:** Enter valid IDs where the Child is already linked, deny replacement ('n').
+    * **Expected Outcome:** Warning about existing link shown, replace confirmation prompt shown, user enters 'n', "Operation cancelled." message shown, function exits.
+* **Action:** Enter valid IDs where the Pet is already linked to another child, confirm 'y'.
+    * **Expected Outcome:** Warning about pet already linked shown, final confirmation 'y', previous owner's link cleared, new link created/updated, Success message.
+* **Action:** Cancel final confirmation ('n').
+    * **Expected Outcome:** "Operation cancelled." message shown.
+
+**4. Search Pet by Child ID (Menu Option 4)**
+
+* **Action:** Enter ID of a child linked to a pet.
+    * **Expected Outcome:** Success message showing details for both Child and linked Pet.
+* **Action:** Enter ID of a child not linked to any pet.
+    * **Expected Outcome:** Info message stating the child is not currently linked.
+* **Action:** Enter non-existent Child ID.
+    * **Expected Outcome:** Warning "Child with ID ... not found".
+* **Action:** Test data inconsistency (Child linked in "Owners", but Pet deleted from "Pets").
+    * **Expected Outcome:** Warning message about missing pet data after finding the link.
+
+**5. Search Child by Pet ID (Menu Option 5)**
+
+* **Action:** Enter ID of a pet linked to a child.
+    * **Expected Outcome:** Success message showing details for both Pet and linked Child.
+* **Action:** Enter ID of a pet not linked to any child.
+    * **Expected Outcome:** Info message stating the pet is not currently linked.
+* **Action:** Enter non-existent Pet ID.
+    * **Expected Outcome:** Warning "Pet with ID ... not found".
+* **Action:** Test data inconsistency (Pet linked in "Owners", but Child deleted from "Children").
+    * **Expected Outcome:** Warning message about missing child data after finding the link.
+
+**6. Delete Child by ID (Menu Option 6)**
+
+* **Action:** Enter ID of an existing child, confirm 'y'.
+    * **Expected Outcome:** Child details shown, confirmation 'y', row deleted from "Children", corresponding row deleted from "Owners", Success message.
+* **Action:** Enter non-existent Child ID.
+    * **Expected Outcome:** Warning "Child with ID ... not found".
+* **Action:** Enter valid Child ID, cancel deletion ('n').
+    * **Expected Outcome:** "Deletion cancelled." message shown, data remains unchanged.
+* **Action:** Delete child who had no link in "Owners".
+    * **Expected Outcome:** Child deleted from "Children", Info message "No corresponding entry found in 'Owners' sheet", overall Success message.
+
+**7. Delete Pet by ID (Menu Option 7)**
+
+* **Action:** Enter ID of an existing linked pet, confirm 'y'.
+    * **Expected Outcome:** Pet details shown, confirmation 'y', row deleted from "Pets", Pet ID cell cleared in "Owners", Success message.
+* **Action:** Enter non-existent Pet ID.
+    * **Expected Outcome:** Warning "Pet with ID ... not found".
+* **Action:** Enter valid Pet ID, cancel deletion ('n').
+    * **Expected Outcome:** "Deletion cancelled." message shown, data remains unchanged.
+* **Action:** Delete pet who had no link in "Owners".
+    * **Expected Outcome:** Pet deleted from "Pets", Info message "No corresponding link found in 'Owners' sheet", overall Success message.
+
+**8. Exit Application (Menu Option 8)**
+
+* **Action:** Select option 8.
+    * **Expected Outcome:** Goodbye message displayed, application terminates cleanly.
+
+**9. General Testing**
+
+* **Action:** Run application with initially empty Google Sheets (except headers).
+    * **Expected Outcome:** `get_next_id` correctly returns 1, add functions work, search/delete functions handle empty data gracefully (e.g., "not found" messages).
+* **Action:** Test non-numeric input where IDs are expected.
+    * **Expected Outcome:** Warning message about invalid ID, prompt repeats.
+* **Action:** Test empty input at various prompts.
+    * **Expected Outcome:** Warning "Input cannot be empty", prompt repeats.
+
+### Validator Testing
+
+* The Python code (`run.py`) was checked using the Flake8 linter (`flake8 run.py`). No major PEP8 violations or logical errors were reported.
