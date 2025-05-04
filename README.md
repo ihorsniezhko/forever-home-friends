@@ -2,7 +2,7 @@
 
 Forever Home Friends is a Python command-line application designed to help manage a simple database of children and their adopted pet puppies and kittens. The application uses a Google Sheet ("forever_home_friends") to store and manage the data persistently, interacting directly with the Google Sheets API via the `gspread` library.
 
-![Mockup showing the application running in a terminal](placeholder_terminal_mockup.png)
+![Mockup showing the application running in a terminal](/media/forever-home-friends.png)
 
 ## Usage
 
@@ -69,7 +69,7 @@ The application utilizes a Google Sheet named `forever_home_friends` for data st
 
 A simple Mermaid Chart flowchart representing the basic flow of the application.
 
-![Forever Home Friends Application Mermaid Flowchart](/media/forever_home_friends.svg)
+![Forever Home Friends Application Mermaid Flowchart](/media/forever-home-friends.svg)
 
 ## Testing
 
@@ -192,6 +192,23 @@ Manual testing was performed extensively to cover all application features and p
 * Implementing data sorting or viewing options.
 * Developing a graphical user interface (GUI).
 
+## Deployment (Heroku)
+
+**The terminal interface can be accessed through the Heroku App URL [Forever Home Friends](https://forever-home-friends-4e88c9b9ac62.herokuapp.com/).**
+
+This application is designed to be deployed on Heroku using the Code Institute Python template.
+
+1.  **Create Heroku App:** Create a new application on Heroku.
+2.  **Set Buildpacks:** In the app's *Settings* tab, add the following buildpacks in this exact order:
+    1.  `heroku/python`
+    2.  `heroku/nodejs`
+3.  **Set Config Vars:** Also in the *Settings* tab, configure the following Config Vars:
+    * `PORT`: Set the value to `8000`.
+    * `CREDS`: Paste the entire contents of your `creds.json` file into the value field.
+    * Ensure Google Sheet named `forever_home_friends` is shared with the `client_email` listed in these credentials.
+4.  **Connect GitHub:** In the *Deploy* tab, connect Heroku app to the GitHub repository containing the project code.
+5.  **Deploy:** Choose the deployment method (automatic or manual) from the connected GitHub `main` branch.
+
 ## Technologies Used
 
 * [Python 3](https://www.python.org/) - Version 3.13.1.
@@ -210,4 +227,5 @@ Manual testing was performed extensively to cover all application features and p
 * **google-auth library:** For handling Google API authentication.
 * **Google:** For providing the Sheets and Drive APIs, and the Google Cloud Platform for authentication.
 * **Mermaid Chart:** For the easy creation of a clear application flowchart.
+* **Stackoverflow.com:** For some great ideas and clean code examples.
 * **Code Institute:** For the Heroku deployment template.
