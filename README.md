@@ -65,6 +65,12 @@ The application utilizes a Google Sheet named `forever_home_friends` for data st
     * Column 1: `Child's name` (Text, format: "First Name Last Name" from Children sheet)
     * Column 2: `Pet Number` (Integer, the ID from the Pets sheet)
 
+## Flowchart
+
+A simple Mermaid Chart flowchart representing the basic flow of the application.
+
+![Forever Home Friends Application Mermaid Flowchart](/media/forever_home_friends.svg)
+
 ## Testing
 
 Manual testing was performed extensively to cover all application features and potential user inputs.
@@ -195,6 +201,7 @@ Manual testing was performed extensively to cover all application features and p
 * [Google Drive API](https://developers.google.com/drive/api/v3/about-sdk)
 * [Google Cloud Platform (GCP)](https://cloud.google.com/) - For Service Account credentials.
 * [Node.js](https://nodejs.org/) - Used by the Heroku deployment template for the web terminal interface.
+* [Mermaid Chart](https://www.mermaidchart.com/) - Service for creating the application flow diagrams.
 
 ## Credits
 
@@ -202,4 +209,5 @@ Manual testing was performed extensively to cover all application features and p
 * **gspread library:** For enabling easy interaction with Google Sheets via Python.
 * **google-auth library:** For handling Google API authentication.
 * **Google:** For providing the Sheets and Drive APIs, and the Google Cloud Platform for authentication.
+* **Mermaid Chart:** For the easy creation of a clear application flowchart.
 * **Code Institute:** For the Heroku deployment template.
