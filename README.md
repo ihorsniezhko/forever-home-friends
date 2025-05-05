@@ -216,7 +216,7 @@ Manual testing was performed extensively to cover all application features and p
 
 * Allowing a child to be linked to multiple pets (would require changing the "Owners" sheet structure).
 * Using Child ID instead of Child Name in the "Owners" sheet to avoid ambiguity with duplicate names.
-* Implementing a quick entry of the next child / pet without repeatedly returning to the main menu.
+* Implementing a quick entry (find, delete, link) of the next child / pet without returning to the main menu.
 * Adding search functionality based on other criteria (e.g., pet type, child age, child name).
 * Implementing data sorting or viewing options.
 * Developing a graphical user interface (GUI).
