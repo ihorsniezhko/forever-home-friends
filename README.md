@@ -56,11 +56,11 @@ The application includes input validation to guide the user and provides status 
 
 ![Search Child by Pet ID menu option](/media/forever-home-friends-menu-5.png)
 
-* **Delete Child by ID:** Remove a child record from the "Children" sheet after confirmation ('y'/'n'). Also finds and removes the corresponding *entire row* from the "Owners" sheet.
+* **Delete Child by ID:** Remove a child record from the "Children" sheet after confirmation ('y'/'n'). Also finds and removes the corresponding **entire row** from the "Owners" sheet.
 
 ![Delete Child by ID menu option](/media/forever-home-friends-menu-6.png)
 
-* **Delete Pet by ID:** Remove a pet record from the "Pets" sheet after confirmation ('y'/'n'). Also finds the corresponding entry in the "Owners" sheet and *clears the Pet ID cell*, leaving the child entry intact but unlinked.
+* **Delete Pet by ID:** Remove a pet record from the "Pets" sheet after confirmation ('y'/'n'). Also finds the corresponding entry in the "Owners" sheet and **clears the Pet ID cell**, leaving the child entry intact but unlinked.
 
 ![Delete Pet by ID menu option](/media/forever-home-friends-menu-7.png)
 
@@ -204,7 +204,7 @@ Manual testing was performed extensively to cover all application features and p
 
 ### Validator Testing
 
-* The Python code (`run.py`) was checked using the Flake8 linter (`flake8 run.py`). No major PEP8 violations or logical errors were reported.
+* The Python code (`run.py`) was checked using the Flake8 linter (`flake8 run.py`) and [Code Institute Python Linter](https://pep8ci.herokuapp.com/) . No major PEP8 violations or logical errors were reported.
 
 ## Known Issues
 
@@ -247,6 +247,7 @@ This application is designed to be deployed on Heroku using the Code Institute P
 * [Google Cloud Platform (GCP)](https://cloud.google.com/) - For Service Account credentials.
 * [Node.js](https://nodejs.org/) - Used by the Heroku deployment template for the web terminal interface.
 * [Mermaid Chart](https://www.mermaidchart.com/) - Service for creating the application flow diagrams.
+* [CI Python Linter] (https://pep8ci.herokuapp.com/) - Code Institute PEP8 Python Validator
 
 ## Credits
 
@@ -256,4 +257,4 @@ This application is designed to be deployed on Heroku using the Code Institute P
 * **Google:** For providing the Sheets and Drive APIs, and the Google Cloud Platform for authentication.
 * **Mermaid Chart:** For the easy creation of a clear application flowchart.
 * **Stackoverflow.com:** For some great ideas and clean code examples.
-* **Code Institute:** For the Heroku deployment template.
+* **Code Institute:** For the Heroku deployment template and Python Validator.
